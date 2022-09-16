@@ -2,7 +2,7 @@
 Estudo de Spring Boot e React JS
 
 
-# Criação de tabela Postgresql
+# Criação de tabela PostgreSQL
 CREATE TABLE financas.lancamento  <br />
 ( <br />
     id bigint NOT NULL, <br />
