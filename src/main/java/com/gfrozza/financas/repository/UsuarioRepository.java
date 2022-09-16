@@ -1,4 +1,7 @@
-package com.gfrozza.financas.repositories;
+package com.gfrozza.financas.repository;
 
-public interface UsuarioRepository extends {
+import com.gfrozza.financas.entity.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 }
