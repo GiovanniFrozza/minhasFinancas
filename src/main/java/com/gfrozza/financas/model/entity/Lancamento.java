@@ -1,7 +1,7 @@
-package com.gfrozza.financas.entity;
+package com.gfrozza.financas.model.entity;
 
-import com.gfrozza.financas.enums.StatusLancamentoEnum;
-import com.gfrozza.financas.enums.TipoLancamentoEnum;
+import com.gfrozza.financas.model.enums.StatusLancamentoEnum;
+import com.gfrozza.financas.model.enums.TipoLancamentoEnum;
 import lombok.*;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 

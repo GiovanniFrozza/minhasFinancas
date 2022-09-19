@@ -1,6 +1,6 @@
-package com.gfrozza.financas.service;
+package com.gfrozza.financas.model.service;
 
-import com.gfrozza.financas.entity.Usuario;
+import com.gfrozza.financas.model.entity.Usuario;
 
 public interface UsuarioService {
 

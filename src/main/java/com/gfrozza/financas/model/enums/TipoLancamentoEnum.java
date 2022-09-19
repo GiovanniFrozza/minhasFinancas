@@ -1,4 +1,4 @@
-package com.gfrozza.financas.enums;
+package com.gfrozza.financas.model.enums;
 
 public enum TipoLancamentoEnum {
     RECEITA,
