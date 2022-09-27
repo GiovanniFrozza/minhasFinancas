@@ -7,6 +7,7 @@ import com.gfrozza.financas.model.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -17,11 +18,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario autenticar(String email, String senha) {
+
         return null;
     }
 
     @Override
+    @Transactional
     public Usuario salvarUsuario(Usuario usuario) {
+        validarEmail(usuario.getEmail());
         return usuarioRepository.save(usuario);
     }
 
