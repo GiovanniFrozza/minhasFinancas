@@ -12,22 +12,22 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static org.apache.tomcat.jni.Proc.fork;
+
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
+        super();
+        this.usuarioRepository = usuarioRepository;
+    }
+
     @Override
     public Usuario autenticar(String email, String senha) {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
-
-        /*
-        usuario.map(x -> x.getSenha().equals(senha))
-               .orElseThrow(() -> new ErroAutenticacaoException("Senha inválida"));
-
-         Testar
-         */
 
         if(!usuario.isPresent()) {
             throw new ErroAutenticacaoException("Usuário não encontrado.");
@@ -35,6 +35,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         if(!usuario.get().getSenha().equals(senha)) {
             throw new ErroAutenticacaoException("Senha inválida.");
         }
+
+        /*
+        usuario.map(x -> x.getSenha().equals(senha))
+               .orElseThrow(() -> new ErroAutenticacaoException("Senha inválida"));
+
+         Testar
+         */
 
         return usuario.get();
     }
