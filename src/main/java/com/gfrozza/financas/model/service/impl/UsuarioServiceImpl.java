@@ -1,6 +1,7 @@
 package com.gfrozza.financas.model.service.impl;
 
 import com.gfrozza.financas.model.entity.Usuario;
+import com.gfrozza.financas.model.exceptions.ErroAutenticacaoException;
 import com.gfrozza.financas.model.exceptions.RegraNegocioException;
 import com.gfrozza.financas.model.repository.UsuarioRepository;
 import com.gfrozza.financas.model.service.UsuarioService;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -18,8 +20,23 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario autenticar(String email, String senha) {
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
 
-        return null;
+        /*
+        usuario.map(x -> x.getSenha().equals(senha))
+               .orElseThrow(() -> new ErroAutenticacaoException("Senha inválida"));
+
+         Testar
+         */
+
+        if(!usuario.isPresent()) {
+            throw new ErroAutenticacaoException("Usuário não encontrado.");
+        }
+        if(!usuario.get().getSenha().equals(senha)) {
+            throw new ErroAutenticacaoException("Senha inválida.");
+        }
+
+        return usuario.get();
     }
 
     @Override
