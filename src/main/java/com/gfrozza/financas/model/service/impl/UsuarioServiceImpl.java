@@ -7,6 +7,8 @@ import com.gfrozza.financas.model.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
@@ -20,7 +22,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario salvarUsuario(Usuario usuario) {
-        return null;
+        return usuarioRepository.save(usuario);
     }
 
     @Override
@@ -29,5 +31,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         if(existe) {
             throw new RegraNegocioException("Já existe um usuario cadastrado com este email.");
         }
+    }
+
+    @Override
+    public List<Usuario> findAll() {
+        return usuarioRepository.findAll();
     }
 }
