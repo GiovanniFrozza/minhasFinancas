@@ -5,6 +5,7 @@ import com.gfrozza.financas.model.entity.Usuario;
 import com.gfrozza.financas.model.exceptions.RegraNegocioException;
 import com.gfrozza.financas.model.repository.UsuarioRepository;
 import com.gfrozza.financas.model.service.UsuarioService;
+import com.gfrozza.financas.model.stub.UsuarioStub;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,8 @@ public class UsuarioServiceImplTest {
 
     @Test(expected = RegraNegocioException.class)
     public void validaEmailJaCadastradoTest() {
-        Usuario usuario = Usuario.builder()
-                .email("mail@email.com")
-                .nome("nome")
-                .build();
+        Usuario usuario = UsuarioStub.usuarioCreate();
         usuarioRepository.save(usuario);
-
         usuarioService.validarEmail(usuario.getEmail());
     }
 
