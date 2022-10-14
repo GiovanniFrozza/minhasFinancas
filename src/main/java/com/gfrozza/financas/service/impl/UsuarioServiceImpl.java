@@ -1,16 +1,15 @@
-package com.gfrozza.financas.model.service.impl;
+package com.gfrozza.financas.service.impl;
 
 import com.gfrozza.financas.model.entity.Usuario;
-import com.gfrozza.financas.model.exceptions.ErroAutenticacaoEmailException;
-import com.gfrozza.financas.model.exceptions.ErroAutenticacaoSenhaException;
-import com.gfrozza.financas.model.exceptions.RegraNegocioException;
+import com.gfrozza.financas.exceptions.ErroAutenticacaoEmailException;
+import com.gfrozza.financas.exceptions.ErroAutenticacaoSenhaException;
+import com.gfrozza.financas.exceptions.RegraNegocioException;
 import com.gfrozza.financas.model.repository.UsuarioRepository;
-import com.gfrozza.financas.model.service.UsuarioService;
+import com.gfrozza.financas.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,9 +27,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     public Usuario autenticar(String email, String senha) {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
 
-        if(!usuario.isPresent()) {
+        if(usuario.isEmpty()) {
             throw new ErroAutenticacaoEmailException("Usuário não encontrado.");
         }
+
         if(!usuario.get().getSenha().equals(senha)) {
             throw new ErroAutenticacaoSenhaException("Senha inválida.");
         }
@@ -53,8 +53,4 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
     }
 
-    @Override
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
-    }
 }

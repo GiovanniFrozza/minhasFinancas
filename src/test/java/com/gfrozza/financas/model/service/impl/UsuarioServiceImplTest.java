@@ -1,11 +1,12 @@
 package com.gfrozza.financas.model.service.impl;
 
 import com.gfrozza.financas.model.entity.Usuario;
-import com.gfrozza.financas.model.exceptions.ErroAutenticacaoEmailException;
-import com.gfrozza.financas.model.exceptions.ErroAutenticacaoSenhaException;
-import com.gfrozza.financas.model.exceptions.RegraNegocioException;
+import com.gfrozza.financas.exceptions.ErroAutenticacaoEmailException;
+import com.gfrozza.financas.exceptions.ErroAutenticacaoSenhaException;
+import com.gfrozza.financas.exceptions.RegraNegocioException;
 import com.gfrozza.financas.model.repository.UsuarioRepository;
 import com.gfrozza.financas.model.stub.UsuarioStub;
+import com.gfrozza.financas.service.impl.UsuarioServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +42,17 @@ public class UsuarioServiceImplTest {
     public void validaEmailJaCadastradoTest() {
         when(usuarioRepository.existsByEmail(anyString())).thenReturn(true);
         usuarioService.validarEmail("email@email.com");
+    }
+
+    @Test(expected = RegraNegocioException.class)
+    public void naoDeveSalvarUmUsuarioComEmailJaCadastrado() {
+        Usuario usuario = UsuarioStub.usuarioCreate();
+
+        Mockito.doThrow(RegraNegocioException.class).when(usuarioService).validarEmail("usuario@email.com");
+
+        usuarioService.salvarUsuario(usuario);
+
+        Mockito.verify(usuarioRepository, Mockito.never()).save(usuario);
     }
 
     @Test

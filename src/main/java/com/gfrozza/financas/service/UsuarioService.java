@@ -1,4 +1,4 @@
-package com.gfrozza.financas.model.service;
+package com.gfrozza.financas.service;
 
 import com.gfrozza.financas.model.entity.Usuario;
 
@@ -11,8 +11,6 @@ public interface UsuarioService {
     Usuario salvarUsuario(Usuario usuario);
 
     void validarEmail(String email);
-
-    List<Usuario> findAll();
 
 
 }

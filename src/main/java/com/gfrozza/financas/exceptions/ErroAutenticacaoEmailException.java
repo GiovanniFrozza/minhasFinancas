@@ -1,4 +1,4 @@
-package com.gfrozza.financas.model.exceptions;
+package com.gfrozza.financas.exceptions;
 
 public class ErroAutenticacaoEmailException extends RuntimeException {
 
