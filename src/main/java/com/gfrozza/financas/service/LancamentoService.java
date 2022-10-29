@@ -4,6 +4,7 @@ import com.gfrozza.financas.model.entity.Lancamento;
 import com.gfrozza.financas.model.enums.StatusLancamentoEnum;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LancamentoService {
 
@@ -18,4 +19,6 @@ public interface LancamentoService {
     void atualizarStatus(Lancamento lancamento, StatusLancamentoEnum statusLancamentoEnum);
 
     void validar(Lancamento lancamento);
+
+    Optional<Lancamento> obterPorId(Long id);
 }

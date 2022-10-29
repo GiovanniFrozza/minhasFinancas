@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class LancamentoServiceImpl implements LancamentoService {
@@ -81,5 +82,10 @@ public class LancamentoServiceImpl implements LancamentoService {
         if(lancamento.getTipoLancamentoEnum() == null){
             throw new RegraNegocioException("Informe um tipo de lançmento válido.");
         }
+    }
+
+    @Override
+    public Optional<Lancamento> obterPorId(Long id) {
+        return this.lancamentoRepository.findById(id);
     }
 }
