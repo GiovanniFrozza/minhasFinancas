@@ -1,5 +1,6 @@
 package com.gfrozza.financas.api.controller;
 
+import com.gfrozza.financas.api.dto.AtualizaStatusDTO;
 import com.gfrozza.financas.api.dto.LancamentoDTO;
 import com.gfrozza.financas.exceptions.RegraNegocioException;
 import com.gfrozza.financas.model.entity.Lancamento;
@@ -51,6 +52,24 @@ public class LancamentoController {
                 new ResponseEntity("Lançamento não encontrado na base da dados.", HttpStatus.BAD_REQUEST));
     }
 
+    @PutMapping("{id}/atualizar-status")
+    public ResponseEntity atualizarStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO atualizaStatusDTO) {
+        return this.lancamentoService.obterPorId(id).map( entity -> {
+            StatusLancamentoEnum statusSelecionado = StatusLancamentoEnum.valueOf(atualizaStatusDTO.getStatus());
+            if(statusSelecionado == null) {
+                return ResponseEntity.badRequest().body("Não foi possível atualizar o status do lançamento, envie um status válido.");
+            }
+            try {
+                entity.setStatusLancamentoEnum(statusSelecionado);
+                this.lancamentoService.atualizar(entity);
+                return ResponseEntity.ok(entity);
+            } catch (RegraNegocioException e){
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }).orElseGet(() ->
+                new ResponseEntity("Lançamento não encontrado na base da dados.", HttpStatus.BAD_REQUEST));
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity deletar(@PathVariable("id") Long id) {
         return lancamentoService.obterPorId(id).map(entidade -> {
@@ -73,7 +92,7 @@ public class LancamentoController {
         lancamentoFiltro.setAno(ano);
 
         Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
-        if(usuario.isPresent()) {
+        if(!usuario.isPresent()) {
             return ResponseEntity.badRequest().body("Não foi possível realizar a consulta. Usuário não encontrado com o código informado.");
         } else {
             lancamentoFiltro.setUsuario(usuario.get());
