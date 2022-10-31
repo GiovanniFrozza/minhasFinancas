@@ -13,13 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping(value = "/api/lancamentos")
 public class LancamentoController {
 
     @Autowired
     private LancamentoService lancamentoService;
-
     @Autowired
     private UsuarioService usuarioService;
 
@@ -49,6 +51,38 @@ public class LancamentoController {
                 new ResponseEntity("Lançamento não encontrado na base da dados.", HttpStatus.BAD_REQUEST));
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity deletar(@PathVariable("id") Long id) {
+        return lancamentoService.obterPorId(id).map(entidade -> {
+            lancamentoService.deletar(entidade);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }).orElseGet( () ->
+            new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
+    }
+
+    @GetMapping
+    public ResponseEntity buscar(
+            @RequestParam(value = "descricao", required = false) String descricao,
+            @RequestParam(value = "mes", required = false) Integer mes,
+            @RequestParam(value = "ano", required = false) Integer ano,
+            @RequestParam(value = "usuario") Long idUsuario) {
+
+        Lancamento lancamentoFiltro = new Lancamento();
+        lancamentoFiltro.setDescricao(descricao);
+        lancamentoFiltro.setMes(mes);
+        lancamentoFiltro.setAno(ano);
+
+        Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
+        if(usuario.isPresent()) {
+            return ResponseEntity.badRequest().body("Não foi possível realizar a consulta. Usuário não encontrado com o código informado.");
+        } else {
+            lancamentoFiltro.setUsuario(usuario.get());
+        }
+
+        List<Lancamento> lancamentos = lancamentoService.buscar(lancamentoFiltro);
+        return ResponseEntity.ok(lancamentos);
+    }
+
     private Lancamento converter(LancamentoDTO lancamentoDTO){
         Lancamento lancamento = new Lancamento();
         lancamento.setId(lancamentoDTO.getId());
@@ -56,10 +90,19 @@ public class LancamentoController {
         lancamento.setAno(lancamentoDTO.getAno());
         lancamento.setMes(lancamentoDTO.getMes());
         lancamento.setValor(lancamentoDTO.getValor());
-        lancamento.setUsuario(usuarioService.obterPorId(lancamentoDTO.getId()).orElseThrow(
-                () -> new RegraNegocioException("Usuário não encontrato.")));
-        lancamento.setTipoLancamentoEnum(TipoLancamentoEnum.valueOf(lancamentoDTO.getTipoLancamentoEnum()));
-        lancamento.setStatusLancamentoEnum(StatusLancamentoEnum.valueOf(lancamentoDTO.getStatusLancamentoEnum()));
+
+        Usuario usuario = usuarioService.obterPorId(lancamentoDTO.getUsuario()).orElseThrow(
+                () -> new RegraNegocioException("Usuário não encontrato."));
+
+        lancamento.setUsuario(usuario);
+        if(lancamentoDTO.getTipoLancamentoEnum() != null) {
+            lancamento.setTipoLancamentoEnum(TipoLancamentoEnum.valueOf(lancamentoDTO.getTipoLancamentoEnum()));
+        }
+        if(lancamentoDTO.getStatusLancamentoEnum() != null) {
+            lancamento.setStatusLancamentoEnum(StatusLancamentoEnum.valueOf(lancamentoDTO.getStatusLancamentoEnum()));
+
+        }
+
         return lancamento;
     }
 }
